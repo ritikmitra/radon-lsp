@@ -37,7 +37,7 @@ jobs:
               run: uv tool install pyinstaller
 
             - name: Build executable
-              run: uv run pyinstaller --onefile --name radon-lsp src/__main__.py
+              run: uv run pyinstaller --onefile --name radon-lsp src/radon_lsp/__main__.py
 
             - name: Rename artifact
               shell: bash

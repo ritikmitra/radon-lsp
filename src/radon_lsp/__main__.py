@@ -1,3 +1,3 @@
-from radon_lsp.server import main
+from src.radon_lsp.server import main
 
 main()
