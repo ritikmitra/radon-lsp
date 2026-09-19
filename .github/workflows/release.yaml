@@ -1,0 +1,62 @@
+name: Build and Release
+
+on:
+    push:
+        tags:
+            - "v*"
+
+jobs:
+    build:
+        strategy:
+            matrix:
+                include:
+                    - os: windows-latest
+                      asset_name: radon-lsp-windows-x86_64.exe
+                      build_name: radon-lsp.exe
+                    - os: macos-latest
+                      asset_name: radon-lsp-macos-x86_64
+                      build_name: radon-lsp
+                    - os: ubuntu-latest
+                      asset_name: radon-lsp-linux-x86_64
+                      build_name: radon-lsp
+
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            - uses: actions/checkout@v7
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v7
+              with:
+                  enable-cache: true
+
+            - name: Install dependencies
+              run: uv sync --dev
+
+            - name: Install pip-audit
+              run: uv tool install pyinstaller
+
+            - name: Build executable
+              run: uv run pyinstaller --onefile --name radon-lsp src/__main__.py
+
+            - name: Rename artifact
+              shell: bash
+              run: mv "dist/${{ matrix.build_name }}" "dist/${{ matrix.asset_name }}"
+
+            - uses: actions/upload-artifact@v7
+              with:
+                  name: ${{ matrix.asset_name }}
+                  path: dist/${{ matrix.asset_name }}
+
+    release:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/download-artifact@v7
+              with:
+                  path: dist
+
+            - name: Create Release
+              uses: softprops/action-gh-release@v3
+              with:
+                  files: dist/*/*
