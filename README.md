@@ -1,6 +1,6 @@
 # radon-lsp
 
-[![CI](https://github.com/ritikmitra/radon-lsp/actions/workflows/ci.yml/badge.svg)](https://github.com/ritikmitra/radon-lsp/actions/workflows/ci.yml)
+[![CI](https://github.com/ritikmitra/radon-lsp/actions/workflows/ci.yml/badge.svg)](https://github.com/ritikmitra/radon-lsp/actions/workflows/ci.yaml)
 [![codecov](https://codecov.io/gh/ritikmitra/radon-lsp/graph/badge.svg)](https://app.codecov.io/gh/ritikmitra/radon-lsp)
 [![Release](https://img.shields.io/github/v/release/ritikmitra/radon-lsp)](https://github.com/ritikmitra/radon-lsp/releases)
 [![Python](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/)
