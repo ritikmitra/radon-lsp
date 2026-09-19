@@ -11,6 +11,8 @@ wheels/
 
 .zed
 
+temp
+
 htmlcov
 
 .coverage
