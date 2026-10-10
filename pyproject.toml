@@ -1,7 +1,7 @@
 [project]
 name = "radon-lsp"
 version = "0.1.0"
-description = "Add your description here"
+description = "Language server that reports Radon complexity and maintainability metrics as LSP diagnostics"
 readme = "README.md"
 authors = [
     { name = "Ritik Mitra", email = "ritikmitra36@gmail.com" }
@@ -24,9 +24,4 @@ dev = [
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
     "pytest-xdist>=3.8.0",
-]
-
-[tool.pytest.ini_options]
-filterwarnings = [
-    "ignore:'asyncio.iscoroutinefunction' is deprecated:DeprecationWarning:pygls.feature_manager"
 ]

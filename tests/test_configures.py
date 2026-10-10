@@ -1,4 +1,4 @@
-from src.radon_lsp.server import RadonLanguageServer
+from radon_lsp.server import RadonLanguageServer
 
 
 def test_configure(server: RadonLanguageServer) -> None:

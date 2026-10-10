@@ -1,6 +1,6 @@
 from textwrap import dedent
 
-from src.radon_lsp.server import RadonLanguageServer
+from radon_lsp.server import RadonLanguageServer
 
 
 def test_complexity_below_threshold(server: RadonLanguageServer) -> None:
