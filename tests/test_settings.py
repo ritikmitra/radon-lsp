@@ -1,4 +1,4 @@
-from src.radon_lsp.server import RadonSettings
+from radon_lsp.server import RadonSettings
 
 
 def test_default_settings() -> None:

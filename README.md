@@ -3,7 +3,7 @@
 [![CI](https://github.com/ritikmitra/radon-lsp/actions/workflows/ci.yaml/badge.svg)](https://github.com/ritikmitra/radon-lsp/actions/workflows/ci.yaml)
 [![codecov](https://codecov.io/gh/ritikmitra/radon-lsp/graph/badge.svg)](https://app.codecov.io/gh/ritikmitra/radon-lsp)
 [![Release](https://img.shields.io/github/v/release/ritikmitra/radon-lsp)](https://github.com/ritikmitra/radon-lsp/releases)
-[![Python](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/python-3.14+-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/github/license/ritikmitra/radon-lsp)](https://github.com/ritikmitra/radon-lsp/blob/main/LICENSE)
 
 A lightweight Python Language Server Protocol (LSP) implementation that brings

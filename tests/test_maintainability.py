@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 from lsprotocol.types import MarkupContent, Position
 
-from src.radon_lsp.server import RadonLanguageServer
+from radon_lsp.server import RadonLanguageServer
 
 
 def test_maintainability_above_threshold(server: RadonLanguageServer) -> None:
@@ -11,7 +11,7 @@ def test_maintainability_above_threshold(server: RadonLanguageServer) -> None:
     diagnostics = []
 
     with patch(
-        "src.radon_lsp.server.mi_visit",
+        "radon_lsp.server.mi_visit",
         return_value=80.0,
     ):
         result = server.analyze_maintainability(
@@ -27,7 +27,7 @@ def test_maintainability_raise_exception(server: RadonLanguageServer) -> None:
 
     diagnostics = []
 
-    with patch("src.radon_lsp.server.mi_visit", side_effect=RuntimeError("test error")):
+    with patch("radon_lsp.server.mi_visit", side_effect=RuntimeError("test error")):
         result = server.analyze_maintainability(
             """def hello():
                 return 1
@@ -81,7 +81,7 @@ def test_low_maintainability_creates_warning(server: RadonLanguageServer) -> Non
     diagnostics = []
 
     with patch(
-        "src.radon_lsp.server.mi_visit",
+        "radon_lsp.server.mi_visit",
         return_value=60.0,
     ):
         server.analyze_maintainability(
@@ -103,7 +103,7 @@ def test_very_low_maintainability_creates_error(server: RadonLanguageServer) -> 
     diagnostics = []
 
     with patch(
-        "src.radon_lsp.server.mi_visit",
+        "radon_lsp.server.mi_visit",
         return_value=40.0,
     ):
         server.analyze_maintainability(

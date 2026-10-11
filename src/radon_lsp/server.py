@@ -5,16 +5,22 @@ from dataclasses import dataclass
 from typing import Any
 
 from lsprotocol.types import (
+    INITIALIZE,
     TEXT_DOCUMENT_DID_CHANGE,
+    TEXT_DOCUMENT_DID_CLOSE,
     TEXT_DOCUMENT_DID_OPEN,
     TEXT_DOCUMENT_DID_SAVE,
     TEXT_DOCUMENT_HOVER,
+    WORKSPACE_DID_CHANGE_CONFIGURATION,
     Diagnostic,
     DiagnosticSeverity,
+    DidChangeConfigurationParams,
     DidChangeTextDocumentParams,
+    DidCloseTextDocumentParams,
     DidOpenTextDocumentParams,
     DidSaveTextDocumentParams,
     Hover,
+    InitializeParams,
     MarkupContent,
     MarkupKind,
     Position,
@@ -156,9 +162,10 @@ class RadonLanguageServer(LanguageServer):
 
     def configure(self, initialization_options: Any):
         """
-        Configure the server from Zed's initialization options.
+        Configure the server from initialization options or from
+        ``workspace/didChangeConfiguration`` settings.
 
-        Supports both:
+        Supports:
 
             {
                 "threshold": 10
@@ -171,15 +178,24 @@ class RadonLanguageServer(LanguageServer):
                     "threshold": 10
                 }
             }
+
+        and:
+
+            {
+                "radon": {
+                    "threshold": 10
+                }
+            }
         """
 
         if not isinstance(initialization_options, dict):
             return
 
-        settings = initialization_options.get(
-            "settings",
-            initialization_options,
-        )
+        settings = initialization_options
+        for key in ("radon", "settings"):
+            if key in settings:
+                settings = settings[key]
+                break
 
         if not isinstance(settings, dict):
             return
@@ -443,6 +459,29 @@ class RadonLanguageServer(LanguageServer):
             diagnostics,
         )
 
+    def reanalyze_open_documents(self):
+        """Re-run analysis for every open document, e.g. after a settings change."""
+
+        for document in list(self.workspace.text_documents.values()):
+            self.analyze(
+                document.uri,
+                document.source,
+            )
+
+    def forget(
+        self,
+        uri: str,
+    ):
+        """Drop cached analysis and clear diagnostics for a closed document."""
+
+        self.blocks.pop(uri, None)
+        self.maintainability.pop(uri, None)
+
+        self.publish_diagnostics(
+            uri,
+            [],
+        )
+
     # -----------------------------------------------------------------------
     # Hover
     # -----------------------------------------------------------------------
@@ -571,6 +610,28 @@ server = RadonLanguageServer()
 
 
 # ---------------------------------------------------------------------------
+# Lifecycle & configuration
+# ---------------------------------------------------------------------------
+
+
+@server.feature(INITIALIZE)
+def initialize(
+    ls: RadonLanguageServer,
+    params: InitializeParams,
+):
+    ls.configure(params.initialization_options)
+
+
+@server.feature(WORKSPACE_DID_CHANGE_CONFIGURATION)
+def did_change_configuration(
+    ls: RadonLanguageServer,
+    params: DidChangeConfigurationParams,
+):
+    ls.configure(params.settings)
+    ls.reanalyze_open_documents()
+
+
+# ---------------------------------------------------------------------------
 # Document events
 # ---------------------------------------------------------------------------
 
@@ -612,6 +673,14 @@ def did_save(
         document.uri,
         document.source,
     )
+
+
+@server.feature(TEXT_DOCUMENT_DID_CLOSE)
+def did_close(
+    ls: RadonLanguageServer,
+    params: DidCloseTextDocumentParams,
+):
+    ls.forget(params.text_document.uri)
 
 
 # ---------------------------------------------------------------------------
